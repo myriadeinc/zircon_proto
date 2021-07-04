@@ -6,13 +6,8 @@ services:
       service: zircon_proto
     build:
         context: ./
-        dockerfile: Dockerfile.dev
-    command: ["tail", "-f", "/dev/null"]
-    volumes:
-      - ./nodejs_wrapper:/usr/src/app/nodejs_wrapper
-      - /usr/src/app/node_modules
+        dockerfile: Dockerfile
     ports:
       - "8088:8088"
-      # For nodemon during local developments
-      - "9878:9878"
+
  

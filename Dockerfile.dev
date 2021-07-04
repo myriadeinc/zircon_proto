@@ -27,4 +27,4 @@ FROM node:14.17.0-buster
 
   COPY --chown=node:node ./nodejs_wrapper .
 
-  CMD ["node", "nodejs_wrapper/main.js"]
+  CMD ["node", "nodejs_wrapper/src/main.js"]

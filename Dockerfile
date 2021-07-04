@@ -1,6 +1,8 @@
 FROM node:14.17.0-buster
+  COPY --chown=node:node zircon.proto /usr/lib/zircon/zircon.proto
   WORKDIR /usr/src/app
   RUN mkdir /usr/src/app/nodejs_wrapper
+
   RUN chown node:node -R /usr/src/app  
   
 
@@ -14,13 +16,13 @@ FROM node:14.17.0-buster
 
   USER node
   COPY --chown=node:node nodejs_wrapper/package*.json ./nodejs_wrapper/
-  WORKDIR /src/src/app/nodejs_wrapper
+  WORKDIR /usr/src/app/nodejs_wrapper
 #   Install early to catch any potential errors in the build process
   RUN npm install https://github.com/MoneroOcean/node-cryptoforknote-util.git#af5a7c21862a4ce324d55e9c461e2a8d8b8b3b42
   RUN npm install https://github.com/MoneroOcean/node-cryptonight-hashing.git#743a6d62f44e6e3de645033f7b54d9f37c38cc81
 
-  RUN npm install --no-optional --quiet
+  RUN npm install --quiet
 
   COPY --chown=node:node ./nodejs_wrapper .
-  COPY --chown=node:node zircon.proto /usr/lib/zircon/zircon.proto
-  CMD ["node", "nodejs_wrapper/main.js"]
+
+  CMD ["node", "src/main.js"]

@@ -1,0 +1,52 @@
+version: 2
+jobs:
+  build:
+    docker:
+      # Primary
+      - image: node:14.17.0-buster
+        environment:
+          rabbitmq__url: amqp://guest:guest@127.0.0.1:5672/
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 18.06.0-ce
+      - run:
+          name: Installing pre-requisite dependencies
+          command: apt-get -qq update && apt-get install libc6-dev=2.28-10 && apt-get -qq install -y libboost-all-dev=1.67.0.1 libsodium-dev=1.0.17-1 libsodium23=1.0.17-1 
+      - run:
+          name: Installing cryptoforknote library
+          command: |
+              cd ./nodejs_wrapper && npm install https://github.com/MoneroOcean/node-cryptoforknote-util.git#af5a7c21862a4ce324d55e9c461e2a8d8b8b3b42
+      - run:
+          name: Installing cryptonight hashing library
+          command: |
+              cd ./nodejs_wrapper && npm install https://github.com/MoneroOcean/node-cryptonight-hashing.git#743a6d62f44e6e3de645033f7b54d9f37c38cc81
+      - run:
+          name: Installing dependencies
+          command: |
+            cd ./nodejs_wrapper && npm install --quiet
+      - run:
+          name: Run Tests
+          command: |
+            cd ./nodejs_wrapper && npm run test
+      - run:
+          name: Installing Docker to build image -> please find a way to fix this
+          command: |
+            apt-get -qq install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common && \
+            curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add && \
+            add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
+            apt-get -qq update && apt-get install -y docker-ce
+      - run:
+          name: Build Docker image
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            TAG=$(git show -s --pretty=%H) make build
+      - deploy:
+          name: Push & deploy build
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "main" ]; then
+              docker push myriadeinc/zircon_proto:$(git show -s --pretty=%H)
+            fi
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              docker push myriadeinc/zircon_proto:$(git show -s --pretty=%H)
+            fi
