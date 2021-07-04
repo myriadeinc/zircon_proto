@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package zircon;
+option go_package = "github.com/myriadeinc/zircon_proto";
+
+service Zircon {
+  rpc validateBlock (Block) returns (BlockResponse) {}
+}
+
+// A constructed block (hex_blob+nonces+seed_hash) should equal hex_result
+message Block {
+  string hex_blob = 1;
+  string hex_nonce = 2;
+  uint32 extra_nonce = 3;
+  string seed_hash = 4;
+  // Actual result from miner, need to verify via rebuilding block
+  string hex_result = 5;
+  // Really a 256bit int
+  string local_diff = 6;
+  string global_diff = 7;
+  string miner_id = 8;
+}
+message BlockResponse {
+
+  enum BlockStatus {
+        INVALID = 0;
+        LOW_SCORE = 1;
+        VALID = 2;
+        WINNER = 3;
+    }
+  BlockStatus block_status = 1;
+  bool should_ban = 2;
+}
+
