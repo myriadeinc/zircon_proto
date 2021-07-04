@@ -16,3 +16,5 @@
 
 # Myriade standard
 config.yml
+
+nodejs_wrapper/node_modules
