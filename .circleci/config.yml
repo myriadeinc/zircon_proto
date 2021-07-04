@@ -6,6 +6,7 @@ jobs:
       - image: node:14.17.0-buster
         environment:
           rabbitmq__url: amqp://guest:guest@127.0.0.1:5672/
+          NODE_PATH: ./nodejs_wrapper/src
     steps:
       - checkout
       - setup_remote_docker:
