@@ -5,6 +5,8 @@ option go_package = "github.com/myriadeinc/zircon_proto";
 
 service Zircon {
   rpc validateBlock (Block) returns (BlockResponse) {}
+  rpc blobWithExtraNonce (string) returns (string) {}
+
 }
 
 // A constructed block (hex_blob+nonces+seed_hash) should equal hex_result

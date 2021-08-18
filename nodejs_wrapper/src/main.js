@@ -2,7 +2,7 @@ const PROTO_PATH = '/usr/lib/zircon/zircon.proto';
 
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
-const serverurl = '0.0.0.0:8088';
+const serverurl = 'zircon_proto:8088';
 const blockReferenceService = require('block.reference.js');
 let packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
