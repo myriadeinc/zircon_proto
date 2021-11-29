@@ -4,7 +4,6 @@ services:
     environment:
       NODE_ENV: local
       # Don't need to watch for nodejs_wrapper since it becomes the dir
-      NODE_PATH: src/
       service__shared_secret: 5e27500b-2838-4fb3-b2e8-2587101829c8
       rabbitmq__url: amqp://guest:guest@mq:5672/
       cache__host: cache

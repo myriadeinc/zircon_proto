@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ZirconClient interface {
 	ValidateBlock(ctx context.Context, in *Block, opts ...grpc.CallOption) (*BlockResponse, error)
+	ConstructJob(ctx context.Context, in *JobStub, opts ...grpc.CallOption) (*JobStub, error)
 }
 
 type zirconClient struct {
@@ -38,11 +39,21 @@ func (c *zirconClient) ValidateBlock(ctx context.Context, in *Block, opts ...grp
 	return out, nil
 }
 
+func (c *zirconClient) ConstructJob(ctx context.Context, in *JobStub, opts ...grpc.CallOption) (*JobStub, error) {
+	out := new(JobStub)
+	err := c.cc.Invoke(ctx, "/zircon.Zircon/constructJob", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ZirconServer is the server API for Zircon service.
 // All implementations must embed UnimplementedZirconServer
 // for forward compatibility
 type ZirconServer interface {
 	ValidateBlock(context.Context, *Block) (*BlockResponse, error)
+	ConstructJob(context.Context, *JobStub) (*JobStub, error)
 	mustEmbedUnimplementedZirconServer()
 }
 
@@ -52,6 +63,9 @@ type UnimplementedZirconServer struct {
 
 func (UnimplementedZirconServer) ValidateBlock(context.Context, *Block) (*BlockResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ValidateBlock not implemented")
+}
+func (UnimplementedZirconServer) ConstructJob(context.Context, *JobStub) (*JobStub, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConstructJob not implemented")
 }
 func (UnimplementedZirconServer) mustEmbedUnimplementedZirconServer() {}
 
@@ -84,6 +98,24 @@ func _Zircon_ValidateBlock_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Zircon_ConstructJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(JobStub)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ZirconServer).ConstructJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/zircon.Zircon/constructJob",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ZirconServer).ConstructJob(ctx, req.(*JobStub))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Zircon_ServiceDesc is the grpc.ServiceDesc for Zircon service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -94,6 +126,10 @@ var Zircon_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "validateBlock",
 			Handler:    _Zircon_ValidateBlock_Handler,
+		},
+		{
+			MethodName: "constructJob",
+			Handler:    _Zircon_ConstructJob_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

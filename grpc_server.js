@@ -1,9 +1,12 @@
-const PROTO_PATH = '/usr/lib/zircon/zircon.proto';
+const PROTO_PATH = './zircon.proto';
 
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
-const serverurl = '0.0.0.0:8088';
-const blockReferenceService = require('block.reference.js');
+
+const blockReferenceService = require('./block.reference.js');
+
+const serverurl = '0.0.0.0:9900';
+
 let packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
     {keepCase: true,
@@ -18,7 +21,9 @@ async function main() {
   let server = new grpc.Server();
   server.addService(
     zircon_proto.Zircon.service, 
-    { validateBlock: blockReferenceService.processBlock });
+    { validateBlock: blockReferenceService.processBlock,
+      constructJob: blockReferenceService.constructJob,
+    });
 
   server.bindAsync(
     serverurl, 

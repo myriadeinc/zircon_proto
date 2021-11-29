@@ -6,7 +6,6 @@ jobs:
       - image: node:14.17.0-buster
         environment:
           rabbitmq__url: amqp://guest:guest@127.0.0.1:5672/
-          NODE_PATH: src/
     steps:
       - checkout
       - setup_remote_docker:
@@ -17,19 +16,19 @@ jobs:
       - run:
           name: Installing cryptoforknote library
           command: |
-              cd ./nodejs_wrapper && npm install https://github.com/MoneroOcean/node-cryptoforknote-util.git#af5a7c21862a4ce324d55e9c461e2a8d8b8b3b42
+              npm install https://github.com/MoneroOcean/node-cryptoforknote-util.git#af5a7c21862a4ce324d55e9c461e2a8d8b8b3b42
       - run:
           name: Installing cryptonight hashing library
           command: |
-              cd ./nodejs_wrapper && npm install https://github.com/MoneroOcean/node-cryptonight-hashing.git#743a6d62f44e6e3de645033f7b54d9f37c38cc81
+              npm install https://github.com/MoneroOcean/node-cryptonight-hashing.git#743a6d62f44e6e3de645033f7b54d9f37c38cc81
       - run:
           name: Installing dependencies
           command: |
-            cd ./nodejs_wrapper && npm install --quiet
+            npm install --quiet
       - run:
           name: Run Tests
           command: |
-            cd ./nodejs_wrapper && npm run test
+            npm run test
       - run:
           name: Installing Docker to build image -> please find a way to fix this
           command: |

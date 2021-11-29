@@ -1,5 +1,5 @@
 'use strict';
-const xmr = require('util/xmr.js');
+const xmr = require('./xmr.js');
 const logger = (s) => console.log(s)
 // Value is 16^64 or 2^256
 const hex256 = BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
@@ -23,6 +23,15 @@ const BlockReference = {
     {
         block_status : result,
     });
+  },
+
+  constructJob: (call, callback) => {
+    // Check protobuf params
+  const input = call.request.jobstub;
+
+  return callback(null, {
+    jobstub: input
+  });
   },
 
 

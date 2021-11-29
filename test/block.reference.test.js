@@ -34,6 +34,7 @@ describe('Unit tests for Block Referencing', ()=> {
         job.seed_hash,
         minerData.result        
         );
+        
     truth.should.be.equal(true);
   });
 

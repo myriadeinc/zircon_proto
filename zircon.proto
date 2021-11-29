@@ -5,6 +5,7 @@ option go_package = "github.com/myriadeinc/zircon_proto";
 
 service Zircon {
   rpc validateBlock (Block) returns (BlockResponse) {}
+  rpc constructJob (JobStub) returns (JobStub) {}
 }
 
 // A constructed block (hex_blob+nonces+seed_hash) should equal hex_result
@@ -19,6 +20,9 @@ message Block {
   string local_diff = 6;
   string global_diff = 7;
   string miner_id = 8;
+}
+message JobStub {
+  string jobstub = 1;
 }
 message BlockResponse {
 
